@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>God Max Pro - Voice Control</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>God Max Pro</h1>
+    <p class="subtitle">Omnipresent AI Automation System</p>
+    
+    <div class="voice-section">
+      <button id="voice-btn" class="voice-button">
+        <span class="mic-icon">?</span>
+        <span class="status-text">Press Ctrl+Shift+V</span>
+      </button>
+      <input type="text" id="voice-input" placeholder="Voice command will appear here..." readonly>
+    </div>
+    
+    <div id="status" class="status">Ready</div>
+    
+    <div class="controls">
+      <button id="test-webhook">Test Webhook</button>
+      <button id="clear-history">Clear History</button>
+    </div>
+    
+    <div id="command-palette" class="command-palette hidden">
+      <h3>Command Palette (Ctrl+Shift+C)</h3>
+      <ul>
+        <li>Generate code for...</li>
+        <li>Check system status</li>
+        <li>Deploy to production</li>
+        <li>Research about...</li>
+        <li>Create workflow...</li>
+      </ul>
+    </div>
+    
+    <div class="history">
+      <h3>Command History</h3>
+      <div id="history"></div>
+    </div>
+  </div>
+  
+  <script src="renderer.js"></script>
+</body>
+</html>
