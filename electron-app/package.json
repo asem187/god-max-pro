@@ -1,0 +1,19 @@
+{
+  "name": "god-max-pro-electron",
+  "version": "1.0.0",
+  "description": "Voice-controlled AI automation desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dev": "electron . --dev"
+  },
+  "dependencies": {
+    "electron": "^28.0.0",
+    "express": "^4.18.2",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.9.1"
+  }
+}

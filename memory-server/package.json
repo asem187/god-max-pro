@@ -1,0 +1,9 @@
+{
+  "name": "god-max-pro-memory-server",
+  "version": "1.0.0",
+  "description": "Auto-briefing memory server for God Max Pro",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
