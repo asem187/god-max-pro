@@ -1,0 +1,30 @@
+{
+  "name": "God Max Pro - System Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "command": "docker ps --format \"table {{.Names}}\t{{.Status}}\t{{.Ports}}\""
+      },
+      "id": "exec-1",
+      "name": "Check Docker Services",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [450, 200]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8899/auto-brief-new-bot",
+        "httpMethod": "GET"
+      },
+      "id": "http-1",
+      "name": "Check Memory Server",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 400]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {},
+  "id": "god-max-pro-monitor"
+}

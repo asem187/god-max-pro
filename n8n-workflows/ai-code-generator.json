@@ -1,0 +1,39 @@
+{
+  "name": "God Max Pro - AI Code Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpMethod": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "claude-3-sonnet-20240229"
+            },
+            {
+              "name": "messages",
+              "value": "={{ [{ role: 'user', content: $json.command }] }}"
+            },
+            {
+              "name": "max_tokens",
+              "value": "4096"
+            }
+          ]
+        }
+      },
+      "id": "claude-1",
+      "name": "Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {},
+  "id": "god-max-pro-code-gen"
+}

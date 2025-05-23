@@ -3,11 +3,12 @@
   "nodes": [
     {
       "parameters": {
+        "httpMethod": "POST",
         "path": "voice-command",
-        "responseMode": "responseNode",
-        "options": {}
+        "responseMode": "onReceived",
+        "responseData": "allEntries"
       },
-      "id": "webhook-voice-input",
+      "id": "webhook-1",
       "name": "Voice Command Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
@@ -15,34 +16,21 @@
     },
     {
       "parameters": {
-        "functionCode": "// God Max Pro - Intelligent Voice Command Router\n// Pattern matching with confidence scoring\n\nconst command = items[0].json.command.toLowerCase();\nconst patterns = {\n  codeGeneration: [\n    /create|generate|build|make|code|function|class|component/,\n    /implement|develop|write|program/\n  ],\n  systemControl: [\n    /system|docker|container|service|process|restart|stop|start/,\n    /status|health|check|monitor/\n  ],\n  research: [\n    /search|find|research|look up|investigate|explore/,\n    /what is|how to|explain|tell me about/\n  ],\n  workflow: [\n    /workflow|automate|n8n|automation|trigger|node/,\n    /connect|integrate|setup/\n  ],\n  memory: [\n    /remember|recall|memory|history|previous|last time/,\n    /save|store|log|record/\n  ]\n};\n\n// Calculate confidence scores\nlet matches = [];\n\nfor (const [category, patternList] of Object.entries(patterns)) {\n  let score = 0;\n  for (const pattern of patternList) {\n    if (pattern.test(command)) {\n      score += 1;\n    }\n  }\n  \n  if (score > 0) {\n    matches.push({\n      category,\n      confidence: score / patternList.length,\n      command\n    });\n  }\n}\n\n// Sort by confidence\nmatches.sort((a, b) => b.confidence - a.confidence);\n\n// Return best match or default\nif (matches.length > 0) {\n  return [{\n    json: {\n      route: matches[0].category,\n      confidence: matches[0].confidence,\n      command,\n      alternativeRoutes: matches.slice(1)\n    }\n  }];\n} else {\n  return [{\n    json: {\n      route: 'general',\n      confidence: 0,\n      command,\n      message: 'No specific pattern matched'\n    }\n  }];\n}"
+        "jsCode": "const command = $input.item.json.body.command.toLowerCase();\nconst patterns = {\n  'generate code': { workflow: 'ai-code-generator', confidence: 0.9 },\n  'check system': { workflow: 'system-monitor', confidence: 0.9 },\n  'docker': { workflow: 'docker-control', confidence: 0.8 },\n  'deploy': { workflow: 'deployment', confidence: 0.85 },\n  'research': { workflow: 'web-research', confidence: 0.8 }\n};\n\nlet bestMatch = { workflow: 'unknown', confidence: 0 };\n\nfor (const [pattern, target] of Object.entries(patterns)) {\n  if (command.includes(pattern)) {\n    if (target.confidence > bestMatch.confidence) {\n      bestMatch = target;\n    }\n  }\n}\n\nreturn { \n  command: command,\n  route: bestMatch.workflow,\n  confidence: bestMatch.confidence,\n  timestamp: new Date().toISOString()\n};"
       },
-      "id": "pattern-matcher",
-      "name": "Pattern Matching Engine",
-      "type": "n8n-nodes-base.function",
+      "id": "code-1",
+      "name": "Intent Classifier",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [450, 300]
     }
   ],
   "connections": {
     "Voice Command Webhook": {
-      "main": [
-        [
-          {
-            "node": "Pattern Matching Engine",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Intent Classifier", "type": "main", "index": 0}]]
     }
   },
   "active": true,
-  "settings": {
-    "saveDataSuccessExecution": "all",
-    "saveExecutionProgress": true,
-    "saveManualExecutions": true,
-    "executionTimeout": 300
-  },
-  "versionId": "god-max-pro-v1"
+  "settings": {},
+  "id": "god-max-pro-voice-router"
 }
