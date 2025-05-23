@@ -1,0 +1,48 @@
+{
+  "name": "God Max Pro - Master Voice Router",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "voice-command",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-voice-input",
+      "name": "Voice Command Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// God Max Pro - Intelligent Voice Command Router\n// Pattern matching with confidence scoring\n\nconst command = items[0].json.command.toLowerCase();\nconst patterns = {\n  codeGeneration: [\n    /create|generate|build|make|code|function|class|component/,\n    /implement|develop|write|program/\n  ],\n  systemControl: [\n    /system|docker|container|service|process|restart|stop|start/,\n    /status|health|check|monitor/\n  ],\n  research: [\n    /search|find|research|look up|investigate|explore/,\n    /what is|how to|explain|tell me about/\n  ],\n  workflow: [\n    /workflow|automate|n8n|automation|trigger|node/,\n    /connect|integrate|setup/\n  ],\n  memory: [\n    /remember|recall|memory|history|previous|last time/,\n    /save|store|log|record/\n  ]\n};\n\n// Calculate confidence scores\nlet matches = [];\n\nfor (const [category, patternList] of Object.entries(patterns)) {\n  let score = 0;\n  for (const pattern of patternList) {\n    if (pattern.test(command)) {\n      score += 1;\n    }\n  }\n  \n  if (score > 0) {\n    matches.push({\n      category,\n      confidence: score / patternList.length,\n      command\n    });\n  }\n}\n\n// Sort by confidence\nmatches.sort((a, b) => b.confidence - a.confidence);\n\n// Return best match or default\nif (matches.length > 0) {\n  return [{\n    json: {\n      route: matches[0].category,\n      confidence: matches[0].confidence,\n      command,\n      alternativeRoutes: matches.slice(1)\n    }\n  }];\n} else {\n  return [{\n    json: {\n      route: 'general',\n      confidence: 0,\n      command,\n      message: 'No specific pattern matched'\n    }\n  }];\n}"
+      },
+      "id": "pattern-matcher",
+      "name": "Pattern Matching Engine",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    }
+  ],
+  "connections": {
+    "Voice Command Webhook": {
+      "main": [
+        [
+          {
+            "node": "Pattern Matching Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "executionTimeout": 300
+  },
+  "versionId": "god-max-pro-v1"
+}
