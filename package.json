@@ -1,0 +1,18 @@
+{
+  "name": "god-max-pro",
+  "version": "1.0.0",
+  "description": "Omnipresent AI Automation System",
+  "scripts": {
+    "start": "cd electron-app && npm start",
+    "install-all": "npm install && cd electron-app && npm install && cd ../memory-server && npm install",
+    "docker-up": "docker-compose up -d",
+    "docker-down": "docker-compose down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asem187/god-max-pro.git"
+  },
+  "keywords": ["ai", "automation", "electron", "n8n", "voice-control"],
+  "author": "Asem",
+  "license": "MIT"
+}
