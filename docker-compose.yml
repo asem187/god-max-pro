@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: n8n
+      POSTGRES_DB: n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U n8n"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  n8n:
+    image: n8nio/n8n
+    container_name: mcp-n8n
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=asem18@gmail.com
+      - N8N_BASIC_AUTH_PASSWORD=Janabi1221!
+      - N8N_HOST=0.0.0.0
+      - WEBHOOK_URL=http://localhost:5678/
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:8080"
+    volumes:
+      - open_webui_data:/app/backend/data
+    environment:
+      - ENABLE_SIGNUP=true
+      - DEFAULT_USER_EMAIL=asem18@gmail.com
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  memory-server:
+    build: ./memory-server
+    container_name: god-max-pro-memory-briefing
+    ports:
+      - "8899:8899"
+    volumes:
+      - mcp-memory:/data:ro
+    restart: unless-stopped
+
+  screen-share:
+    build: ./screen-share
+    container_name: god-max-pro-screen-share
+    ports:
+      - "8765:8765"
+    volumes:
+      - screen_data:/app/sessions
+
+volumes:
+  postgres_data:
+  n8n_data:
+  open_webui_data:
+  mcp-memory:
+  screen_data:
